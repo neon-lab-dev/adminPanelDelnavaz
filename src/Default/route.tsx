@@ -8,7 +8,7 @@ import Login from "../pages/Login";
 export const route = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <Login/>,
     errorElement: <ErrorPage />,
   },
   {
