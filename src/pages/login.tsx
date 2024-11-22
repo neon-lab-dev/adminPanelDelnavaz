@@ -1,6 +1,6 @@
 import logo from "../assets/logo.png";
 
-export default function login() {
+export default function Login() {
   return (
     <div className="w-full min-h-screen py-10 px-3 flex justify-center items-center">
       <div className="w-full sm:w-[590px] p-20 border flex flex-col gap-7 shadow-md rounded-md">
