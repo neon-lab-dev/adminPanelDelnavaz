@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  transition: 0.5s;
+}
+.active {
+  background: rgba(128, 128, 128, 0.281) !important;
+}
