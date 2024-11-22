@@ -3,7 +3,7 @@ import Root from "../Root";
 import ErrorPage from "./ErrorPage";
 import Users from "../pages/Users/Users";
 import Recordings from "../pages/recordings/Recordings";
-import Login from "../pages/Login";
+import Login from "../pages/Login/Login";
 
 export const route = createBrowserRouter([
   {
