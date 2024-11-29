@@ -3,7 +3,7 @@ import Users from "../pages/Users/Users";
 import Login from "../pages/Login/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound/NotFound";
-import Recordings from "../pages/Recordings/Recordings";
+import RecordingsPage from './../pages/Recordings/RecordingsPage';
 
 export const route = createBrowserRouter([
   {
@@ -22,7 +22,7 @@ export const route = createBrowserRouter([
       },
       {
         path: "recordings",
-        element: <Recordings />,
+        element: <RecordingsPage />,
       },
     ],
   },
