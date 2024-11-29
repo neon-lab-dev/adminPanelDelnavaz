@@ -107,6 +107,7 @@ const RecordingTable: React.FC = () => {
           ))}
         </tbody>
 
+          {/* Edit recordings modal */}
         <Modal openModal={openEditRecordingModal} setOpenModal={setOpenEditRecordinModal} title={"Edit Recording"}>
          <EditRecording/>
         </Modal>
