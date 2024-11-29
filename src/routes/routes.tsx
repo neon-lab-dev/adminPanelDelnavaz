@@ -1,27 +1,27 @@
 import { createBrowserRouter } from "react-router-dom";
-import Root from "../Root";
-import ErrorPage from "./ErrorPage";
 import Users from "../pages/Users/Users";
-import Recordings from "../pages/recordings/Recordings";
+import Recordings from "../pages/Recordings/Recordings";
 import Login from "../pages/Login/Login";
+import DashboardLayout from "../layouts/DashboardLayout";
+import NotFound from "../pages/NotFound/NotFound";
 
 export const route = createBrowserRouter([
   {
     path: "/",
     element: <Login/>,
-    errorElement: <ErrorPage />,
+    errorElement: <NotFound />,
   },
   {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    errorElement: <NotFound />,
     children: [
       {
-        path: "/dashboard",
+        path: "users",
         element: <Users />,
       },
       {
-        path: "/recordings",
+        path: "recordings",
         element: <Recordings />,
       },
     ],

@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { FaEllipsisH } from "react-icons/fa";
+import Modal from "../../components/Reusable/Modal/Modal";
+import EditRecording from "./EditRecording";
+import ViewRecording from "./ViewRecording";
 
 type RecordingData = {
   name: string;
@@ -8,6 +11,8 @@ type RecordingData = {
 };
 
 const RecordingTable: React.FC = () => {
+  const [openEditRecordingModal, setOpenEditRecordinModal] = useState(false);
+  const [openViewRecordingModal, setOpenViewRecordinModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
   const data: RecordingData[] = [
@@ -77,13 +82,13 @@ const RecordingTable: React.FC = () => {
                       <ul>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => alert("View option clicked")}
+                          onClick={() => setOpenViewRecordinModal(true)}
                         >
                           View
                         </li>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => alert("Edit option clicked")}
+                          onClick={() => setOpenEditRecordinModal(true)}
                         >
                           Edit
                         </li>
@@ -101,6 +106,15 @@ const RecordingTable: React.FC = () => {
             </tr>
           ))}
         </tbody>
+
+        <Modal openModal={openEditRecordingModal} setOpenModal={setOpenEditRecordinModal} title={"Edit Recording"}>
+         <EditRecording/>
+        </Modal>
+
+        {/* View recording modal */}
+        <Modal openModal={openViewRecordingModal} setOpenModal={setOpenViewRecordinModal}>
+         <ViewRecording/>
+        </Modal>
       </table>
       {/* Close the menu if you click outside */}
       {activeMenu !== null && (

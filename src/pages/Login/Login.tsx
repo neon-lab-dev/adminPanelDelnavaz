@@ -1,43 +1,88 @@
+import { useForm } from "react-hook-form";
 import logo from "../../assets/logo.png";
 
+interface LoginFormInputs {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
+
+  const onSubmit = (data: LoginFormInputs) => {
+    console.log("Login Data:", data);
+  };
+
   return (
-    <div className="w-full min-h-screen py-10 px-3 flex justify-center items-center">
-      <div className="w-full sm:w-[590px] p-20 border flex flex-col gap-7 shadow-md rounded-md">
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full flex flex-col gap-7 p-[56px] max-w-[500px] mx-auto border order-[#EBEDF0] rounded-xl"
+      >
         <img src={logo} alt="logo" className="w-20" />
 
         <h1 className="text-[#463730] font-bold text-2xl">
-          Login your account
+          Login to your account
         </h1>
-        <div className="w-full">
-          <label>Email</label>
+
+        {/* Email Field */}
+        <div className="w-full flex flex-col gap-2">
+          <label className="text-[#424242]">Email</label>
           <input
             type="email"
-            name="email"
-            className="w-full my-1 rounded-md border outline-0 px-3 p-2"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Invalid email address",
+              },
+            })}
+            className="w-full rounded-md border border-[#C6C6C6] outline-0 px-3 p-2"
             placeholder="Enter Your Email"
           />
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email.message}</span>
+          )}
         </div>
-        <div className="w-full">
-          <label>Password</label>
+
+        {/* Password Field */}
+        <div className="w-full flex flex-col gap-2">
+          <label className="text-[#424242]">Password</label>
           <input
             type="password"
-            name="password"
-            className="w-full my-1 rounded-md border outline-0 px-3 p-2"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long",
+              },
+            })}
+            className="w-full rounded-md border border-[#C6C6C6] outline-0 px-3 p-2"
             placeholder="Enter Your Password"
           />
+          {errors.password && (
+            <span className="text-red-500 text-sm">
+              {errors.password.message}
+            </span>
+          )}
           <div className="w-full flex justify-end items-end">
             <small className="cursor-pointer text-blue-600">
-              Forget Password?{" "}
+              Forgot Password?
             </small>
           </div>
         </div>
+
+        {/* Submit Button */}
         <input
           type="submit"
           value="Login"
-          className="bg-[#463730] text-white rounded-md w-full p-2 font-semibold"
+          className="bg-[#463730] text-white rounded-md w-full p-2 font-semibold cursor-pointer"
         />
-      </div>
+      </form>
     </div>
   );
 };
