@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Users from "../pages/Users/Users";
-import Recordings from "../pages/Recordings/Recordings";
 import Login from "../pages/Login/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound/NotFound";
+import Recordings from "../pages/Recordings/Recordings";
 
 export const route = createBrowserRouter([
   {
