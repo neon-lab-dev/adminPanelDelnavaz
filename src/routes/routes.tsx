@@ -3,7 +3,7 @@ import Users from "../pages/Users/Users";
 import Login from "../pages/Login/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import NotFound from "../pages/NotFound/NotFound";
-import RecordingsPage from './../pages/Recordings/RecordingsPage';
+import RecordingsPage from '../pages/recordings/RecordingsPage';
 
 export const route = createBrowserRouter([
   {
