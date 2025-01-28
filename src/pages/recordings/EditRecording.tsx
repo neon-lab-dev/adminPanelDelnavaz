@@ -12,8 +12,7 @@ type TFormValues = {
   bannerimage: FileList | null;
 };
 
-const EditRecording = ({ recording, setOpenModal }: { recording: any }) => {
-  console.log(recording);
+const EditRecording = ({ recording, setOpenModal }: { recording: any, setOpenModal:React.Dispatch<React.SetStateAction<boolean>> }) => {
   // const categories = ["Music", "Podcast", "Tutorial", "Comedy"];
 
   const {
@@ -38,8 +37,6 @@ const EditRecording = ({ recording, setOpenModal }: { recording: any }) => {
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("category", data.category);
-
-    // Append the banner image only if a new file is selected
     if (data.bannerimage && data.bannerimage[0]) {
       formData.append("bannerimage", data.bannerimage[0]);
     }

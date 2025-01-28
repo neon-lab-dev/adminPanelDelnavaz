@@ -2,10 +2,16 @@
 import { useRef, useState } from "react";
 import { ICONS } from "../../assets";
 
-const ViewRecording = ({ recording, setOpenViewModal, setOpenModal }: { recording: any }) => {
-  const [isPlaying, setIsPlaying] = useState(false); // Tracks if audio is playing
-  const [currentTime, setCurrentTime] = useState(0); // Tracks current playback time
-  const [duration, setDuration] = useState(0); // Tracks audio duration
+type TEditRecordingProps = {
+    recording: any;
+    setOpenViewModal: React.Dispatch<React.SetStateAction<boolean>>;
+    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+
+const ViewRecording:React.FC<TEditRecordingProps> = ({ recording, setOpenViewModal, setOpenModal }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handlePlayPause = () => {

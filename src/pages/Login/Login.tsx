@@ -28,14 +28,16 @@ const Login = () => {
         "https://podcast-backend-snowy.vercel.app/api/v1/auth/admin/login",
         data,
         {
-          withCredentials: true, // Send cookies with the request
+          withCredentials: true,
         }
       );
 
+      const user = response?.data?.data
       // Store the token in a cookie
       const token = response.data?.token;
       if (token) {
         Cookies.set("authToken", token, { expires: 7 });
+        localStorage.setItem("user", JSON.stringify(user));
         toast.success("Logged in successfully!");
         navigate("/dashboard/users")
       } else {
