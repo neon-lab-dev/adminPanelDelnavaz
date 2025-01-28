@@ -4,6 +4,9 @@ import { FaEllipsisH } from "react-icons/fa";
 import Modal from "../../components/Reusable/Modal/Modal";
 import EditRecording from "./EditRecording";
 import ViewRecording from "./ViewRecording";
+import Cookies from 'js-cookie';
+import axios from "axios";
+import toast from "react-hot-toast";
 
 type TRecordingTable = {
   data: any;
@@ -15,8 +18,8 @@ const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => 
   const [openEditRecordingModal, setOpenEditRecordingModal] = useState(false);
   const [openViewRecordingModal, setOpenViewRecordingModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
-  const [selectedRecording, setSelectedRecording] = useState<any>(null); // State to store selected recording data
-
+  const [selectedRecording, setSelectedRecording] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const toggleMenu = (index: number) => {
     setActiveMenu(activeMenu === index ? null : index);
   };
@@ -26,13 +29,38 @@ const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => 
   };
 
   const handleViewRecording = (recording: any) => {
-    setSelectedRecording(recording); // Set the selected recording data
-    setOpenViewRecordingModal(true); // Open the view modal
+    setSelectedRecording(recording);
+    setOpenViewRecordingModal(true);
   };
 
   const handleEditRecording = (recording: any) => {
-    setSelectedRecording(recording); // Set the selected recording data
-    setOpenEditRecordingModal(true); // Open the edit modal
+    setSelectedRecording(recording);
+    setOpenEditRecordingModal(true);
+  };
+
+  const handleDeletePodcast = async (_id : string) => {
+    setIsDeleting(true);
+    const token = Cookies.get("authToken");
+    try {
+      const response = await axios.delete(
+        `https://podcast-backend-snowy.vercel.app/api/v1/podcast/${_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true,
+        }
+      );
+      if(response?.data?.status === 200){
+        toast.success(response?.data?.message);
+        window.location.reload();
+      }
+      console.log(response);
+      setIsDeleting(false);
+    } catch (err: any) {
+      console.log(err);
+      setIsDeleting(false);
+    }
   };
 
   if (loading) {
@@ -86,9 +114,11 @@ const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => 
                         </li>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
-                          onClick={() => alert(`Delete ${recording.name}`)}
+                          onClick={() => handleDeletePodcast(recording?._id)}
                         >
-                          Delete
+                          {
+                            isDeleting? "Deleting..." : "Delete"
+                          }
                         </li>
                       </ul>
                     </div>
