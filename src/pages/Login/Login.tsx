@@ -32,9 +32,6 @@ const Login = () => {
         }
       );
 
-      // Log the full response
-      console.log("API Response:", response);
-
       // Store the token in a cookie
       const token = response.data?.token;
       if (token) {
