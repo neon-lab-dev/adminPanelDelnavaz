@@ -114,7 +114,7 @@ const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => 
         openModal={openViewRecordingModal}
         setOpenModal={setOpenViewRecordingModal}
       >
-        <ViewRecording recording={selectedRecording} />
+        <ViewRecording recording={selectedRecording} setOpenViewModal={setOpenViewRecordingModal} setOpenModal={setOpenEditRecordingModal} />
       </Modal>
 
       {/* Close the menu if you click outside */}

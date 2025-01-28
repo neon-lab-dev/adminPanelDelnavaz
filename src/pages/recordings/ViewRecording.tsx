@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { ICONS } from "../../assets";
 
-const ViewRecording = ({ recording }: { recording: any }) => {
+const ViewRecording = ({ recording, setOpenViewModal, setOpenModal }: { recording: any }) => {
   const [isPlaying, setIsPlaying] = useState(false); // Tracks if audio is playing
   const [currentTime, setCurrentTime] = useState(0); // Tracks current playback time
   const [duration, setDuration] = useState(0); // Tracks audio duration
@@ -109,7 +109,10 @@ const ViewRecording = ({ recording }: { recording: any }) => {
             onClick={() => handleForward(10)} // Forward 10 seconds
           />
         </div>
-        <img src={ICONS.pen} alt="pen" className="size-6 cursor-pointer" />
+        <img onClick={() => {
+            setOpenViewModal(false);
+            setOpenModal(true)
+        }} src={ICONS.pen} alt="pen" className="size-6 cursor-pointer" />
       </div>
     </div>
   );
