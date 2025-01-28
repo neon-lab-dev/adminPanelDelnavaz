@@ -1,47 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FaEllipsisH } from "react-icons/fa";
 import Modal from "../../components/Reusable/Modal/Modal";
 import EditRecording from "./EditRecording";
 import ViewRecording from "./ViewRecording";
 
-type RecordingData = {
-  name: string;
-  description: string;
-  category: string;
+type TRecordingTable = {
+  data: any;
+  loading: boolean;
+  error: string | null;
 };
 
-const RecordingTable: React.FC = () => {
-  const [openEditRecordingModal, setOpenEditRecordinModal] = useState(false);
-  const [openViewRecordingModal, setOpenViewRecordinModal] = useState(false);
+const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => {
+  const [openEditRecordingModal, setOpenEditRecordingModal] = useState(false);
+  const [openViewRecordingModal, setOpenViewRecordingModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
-
-  const data: RecordingData[] = [
-    {
-      name: "How did NASA send person to Space",
-      description: "Lorem ipsum dolor sit amet consectetur. Dict...",
-      category: "History",
-    },
-    {
-      name: "How did NASA send person to Space",
-      description: "Lorem ipsum dolor sit amet consectetur. Dict...",
-      category: "History",
-    },
-    {
-      name: "How did NASA send person to Space",
-      description: "Lorem ipsum dolor sit amet consectetur. Dict...",
-      category: "History",
-    },
-    {
-      name: "How did NASA send person to Space",
-      description: "Lorem ipsum dolor sit amet consectetur. Dict...",
-      category: "History",
-    },
-    {
-      name: "How did NASA send person to Space",
-      description: "Lorem ipsum dolor sit amet consectetur. Dict...",
-      category: "History",
-    },
-  ];
+  const [selectedRecording, setSelectedRecording] = useState<any>(null); // State to store selected recording data
 
   const toggleMenu = (index: number) => {
     setActiveMenu(activeMenu === index ? null : index);
@@ -50,6 +24,24 @@ const RecordingTable: React.FC = () => {
   const closeMenu = () => {
     setActiveMenu(null);
   };
+
+  const handleViewRecording = (recording: any) => {
+    setSelectedRecording(recording); // Set the selected recording data
+    setOpenViewRecordingModal(true); // Open the view modal
+  };
+
+  const handleEditRecording = (recording: any) => {
+    setSelectedRecording(recording); // Set the selected recording data
+    setOpenEditRecordingModal(true); // Open the edit modal
+  };
+
+  if (loading) {
+    return <div className="text-center py-5">Loading recordings...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-5 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="w-full mx-auto bg-gray-100 overflow-auto">
@@ -63,8 +55,8 @@ const RecordingTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((recording, index) => (
-            <tr key={index} className="border-b last:border-none relative">
+          {data?.map((recording: any, index: number) => (
+            <tr key={recording._id} className="border-b last:border-none relative">
               <td className="p-3 text-gray-700">{recording.name}</td>
               <td className="p-3 text-gray-700">{recording.description}</td>
               <td className="p-3 text-gray-700">{recording.category}</td>
@@ -82,19 +74,19 @@ const RecordingTable: React.FC = () => {
                       <ul>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => setOpenViewRecordinModal(true)}
+                          onClick={() => handleViewRecording(recording)}
                         >
                           View
                         </li>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => setOpenEditRecordinModal(true)}
+                          onClick={() => handleEditRecording(recording)}
                         >
                           Edit
                         </li>
                         <li
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
-                          onClick={() => alert("Delete option clicked")}
+                          onClick={() => alert(`Delete ${recording.name}`)}
                         >
                           Delete
                         </li>
@@ -106,17 +98,25 @@ const RecordingTable: React.FC = () => {
             </tr>
           ))}
         </tbody>
-
-          {/* Edit recordings modal */}
-        <Modal openModal={openEditRecordingModal} setOpenModal={setOpenEditRecordinModal} title={"Edit Recording"}>
-         <EditRecording/>
-        </Modal>
-
-        {/* View recording modal */}
-        <Modal openModal={openViewRecordingModal} setOpenModal={setOpenViewRecordinModal}>
-         <ViewRecording/>
-        </Modal>
       </table>
+
+      {/* Edit recordings modal */}
+      <Modal
+        openModal={openEditRecordingModal}
+        setOpenModal={setOpenEditRecordingModal}
+        title={"Edit Recording"}
+      >
+        <EditRecording recording={selectedRecording} setOpenModal={setOpenEditRecordingModal} />
+      </Modal>
+
+      {/* View recording modal */}
+      <Modal
+        openModal={openViewRecordingModal}
+        setOpenModal={setOpenViewRecordingModal}
+      >
+        <ViewRecording recording={selectedRecording} />
+      </Modal>
+
       {/* Close the menu if you click outside */}
       {activeMenu !== null && (
         <div className="fixed inset-0 z-0" onClick={closeMenu}></div>
