@@ -55,7 +55,6 @@ const RecordingTable: React.FC<TRecordingTable> = ({ data, loading, error }) => 
         toast.success(response?.data?.message);
         window.location.reload();
       }
-      console.log(response);
       setIsDeleting(false);
     } catch (err: any) {
       console.log(err);
