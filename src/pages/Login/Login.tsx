@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 import logo from "../../assets/logo.png";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface LoginFormInputs {
   email: string;
@@ -7,14 +13,42 @@ interface LoginFormInputs {
 }
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: LoginFormInputs) => {
+    setIsLoading(true)
+    try {
+      const response = await axios.post(
+        "https://podcast-backend-snowy.vercel.app/api/v1/auth/admin/login",
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const user = response?.data?.data
+      // Store the token in a cookie
+      const token = response.data?.token;
+      if (token) {
+        Cookies.set("authToken", token, { expires: 7 });
+        localStorage.setItem("user", JSON.stringify(user));
+        toast.success("Logged in successfully!");
+        navigate("/dashboard/users")
+      } else {
+        toast("Token not found in the response.");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Invalid login credentials.");
+      setIsLoading(false);
+    } finally{
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,19 +103,19 @@ const Login = () => {
               {errors.password.message}
             </span>
           )}
-          <div className="w-full flex justify-end items-end">
+          {/* <div className="w-full flex justify-end items-end">
             <small className="cursor-pointer text-blue-600">
               Forgot Password?
             </small>
-          </div>
+          </div> */}
         </div>
 
         {/* Submit Button */}
-        <input
-          type="submit"
-          value="Login"
-          className="bg-[#463730] text-white rounded-md w-full p-2 font-semibold cursor-pointer"
-        />
+        <button type="submit" className="bg-[#463730] text-white rounded-md w-full p-2 font-semibold cursor-pointer">
+            {
+              isLoading? "Loading..." : "Login"
+            }
+        </button>
       </form>
     </div>
   );

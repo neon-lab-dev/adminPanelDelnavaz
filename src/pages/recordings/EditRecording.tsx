@@ -1,32 +1,69 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 type TFormValues = {
-    recordingName: string;
-    description: string;
-    category: string;
-    bannerImage: FileList;
+  name: string;
+  description: string;
+  category: string;
+  bannerimage: FileList | null;
+};
+
+const EditRecording = ({ recording, setOpenModal }: { recording: any, setOpenModal:React.Dispatch<React.SetStateAction<boolean>> }) => {
+  // const categories = ["Music", "Podcast", "Tutorial", "Comedy"];
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<TFormValues>();
+
+  // Populate default values from the props
+  useEffect(() => {
+    if (recording) {
+      setValue("name", recording.name);
+      setValue("description", recording.description);
+      setValue("category", recording.category);
+    }
+  }, [recording, setValue]);
+
+  const onSubmit = async (data: TFormValues) => {
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    if (data.bannerimage && data.bannerimage[0]) {
+      formData.append("bannerimage", data.bannerimage[0]);
+    }
+    const token = Cookies.get("authToken");
+
+    try {
+      const response = await axios.put(`https://podcast-backend-snowy.vercel.app/api/v1/podcast/${recording?._id}`, formData, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true,
+        }
+      );
+      if(response?.data?.status === 200){
+        toast.success(response?.data?.message);
+        setOpenModal(false);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error updating recording:", error);
+      alert("Failed to update recording.");
+    }
   };
 
-const EditRecording = () => {
-    const categories = ["Music", "Podcast", "Tutorial", "Comedy"];
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<TFormValues>();
-  
-    const onSubmit = (data: TFormValues) => {
-      const formData = new FormData();
-  
-      formData.append("recordingName", data.recordingName);
-      formData.append("description", data.description);
-      formData.append("category", data.category);
-      formData.append("bannerImage", data.bannerImage[0]);
-      console.log(formData.get("recordingName"));
-    };
-
-    return (
-        <form
+  return (
+    <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6 mt-8"
     >
@@ -35,15 +72,15 @@ const EditRecording = () => {
         <label className="text-[#424242]">Name of the Recording</label>
         <input
           type="text"
-          {...register("recordingName", {
+          {...register("name", {
             required: "Recording name is required",
           })}
           className="w-full rounded-md border border-[#C6C6C6] outline-0 px-3 p-2"
           placeholder="Name of the recording"
         />
-        {errors.recordingName && (
+        {errors.name && (
           <span className="text-red-500 text-sm">
-            {errors.recordingName.message}
+            {errors.name.message}
           </span>
         )}
       </div>
@@ -69,19 +106,14 @@ const EditRecording = () => {
       {/* Category */}
       <div className="w-full flex flex-col gap-2">
         <label className="text-[#424242]">Category</label>
-        <select
-          {...register("category", { required: "Category is required" })}
+        <input
+          type="text"
+          {...register("category", {
+            required: "Category is required",
+          })}
           className="w-full rounded-md border border-[#C6C6C6] outline-0 px-3 p-2"
-        >
-          <option value="" disabled>
-            Select a category
-          </option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+          placeholder="Enter the category"
+        />
         {errors.category && (
           <span className="text-red-500 text-sm">
             {errors.category.message}
@@ -95,36 +127,28 @@ const EditRecording = () => {
         <input
           type="file"
           accept="image/*"
-          {...register("bannerImage", {
-            required: "Banner image is required",
-          })}
+          {...register("bannerimage")}
           className="w-full rounded-md border border-[#C6C6C6] outline-0 px-3 p-2"
         />
-        {errors.bannerImage && (
-          <span className="text-red-500 text-sm">
-            {errors.bannerImage.message}
-          </span>
-        )}
       </div>
 
       {/* Submit Button */}
       <div className="flex items-center justify-end gap-3">
-      <button
-        type="submit"
-        className="px-5 py-[10px] rounded-lg bg-[#F2F4F3] text-[#676767] text-lg font-medium leading-6 transition"
-      >
-        Cancel
-      </button>
-      <button
-        type="submit"
-        className="px-5 py-[10px] rounded-lg bg-[#463730] text-white text-lg font-medium leading-6 hover:bg-[#121313] transition"
-      >
-        Submit
-      </button>
-      
+        <button
+          onClick={() => setOpenModal(false)}
+          className="px-5 py-[10px] rounded-lg bg-[#F2F4F3] text-[#676767] text-lg font-medium leading-6 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-5 py-[10px] rounded-lg bg-[#463730] text-white text-lg font-medium leading-6 hover:bg-[#121313] transition"
+        >
+          Submit
+        </button>
       </div>
     </form>
-    );
+  );
 };
 
 export default EditRecording;
